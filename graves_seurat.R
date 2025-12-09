@@ -8,6 +8,8 @@ library(viridis)
 library(harmony)
 library(ggpubr)
 
-graves1.data <- Read10X(data.dir = "/20251029_Graves/filtered_feature_bc_matrix/")
-graves1 <- CreateSeuratObject(counts = E_H1, project = "E_H-01", min.cells = 3, min.features = 400)
+graves1.data <- Read10X(data.dir = "../HRR1795847/filtered_feature_bc_matrix/")
+graves1 <- CreateSeuratObject(counts = graves1.data, project = "Graves_1", min.cells = 3, min.features = 400)
+graves1[["percent.mt"]] <- PercentageFeatureSet(graves1, pattern = "^MT-") 
+graves1 <- subset(graves1, subset = nFeature_RNA > 200 & nFeature_RNA < 4000 & percent.mt < 20)
 
