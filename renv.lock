@@ -3,8 +3,8 @@
     "Version": "4.4.2",
     "Repositories": [
       {
-        "Name": "CRAN",
-        "URL": "https://ftp.osuosl.org/pub/cran"
+        "Name": "P3M",
+        "URL": "https://packagemanager.posit.co/cran/__linux__/jammy/latest"
       }
     ]
   },
