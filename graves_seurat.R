@@ -17,9 +17,9 @@ DefaultAssay(graves1) <- 'RNA'
 
 graves1 <- NormalizeData(graves1, normalization.method = "LogNormalize", scale.factor= 1e4) # default parameters for NormalizeData
 graves1 <- FindVariableFeatures(graves1, nfeatures = 4000) # default is nfeatures = 2000                     
-graves1 <- ScaleData(graves1, vars.to.regress = c("nCount_RNA", "percent.mt"), verbose = FALSE)
-graves1 <- RunPCA(graves1, npcs = 50, verbose = FALSE)
-graves1 <- scRNA %>% RunHarmony("orig.ident", plot_convergence = TRUE)
+graves1 <- ScaleData(graves1, vars.to.regress = c("nCount_RNA", "percent.mt"))
+graves1 <- RunPCA(graves1, npcs = 50)
+graves1 <- graves1 %>% RunHarmony("orig.ident", plot_convergence = TRUE)
 graves1 <- RunUMAP(graves1, reduction = "harmony", dims = 1:30)
 graves1 <- FindNeighbors(graves1, reduction = "harmony", dims = 1:50)
 graves1 <- FindClusters(graves1, resolution = 0.6)
