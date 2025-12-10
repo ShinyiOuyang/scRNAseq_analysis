@@ -12,7 +12,6 @@ graves1.data <- Read10X(data.dir = "../HRR1795847/filtered_feature_bc_matrix/")
 graves1 <- CreateSeuratObject(counts = graves1.data, project = "Graves_1", min.cells = 3, min.features = 400)
 graves1[["percent.mt"]] <- PercentageFeatureSet(graves1, pattern = "^MT-") 
 graves1 <- subset(graves1, subset = nFeature_RNA > 200 & nFeature_RNA < 4000 & percent.mt < 20)
-
 DefaultAssay(graves1) <- 'RNA'
 
 graves1 <- NormalizeData(graves1, normalization.method = "LogNormalize", scale.factor= 1e4) # default parameters for NormalizeData
