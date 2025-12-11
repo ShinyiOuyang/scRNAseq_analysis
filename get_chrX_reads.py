@@ -52,9 +52,9 @@ subprocess.run(
         "samtools",
         "sort",
         "-o",
-        "possorted_genome_bam.sorted.bam",
+        DIR + "possorted_genome_bam.sorted.bam",
         curr_file,
     ],
     check=True,
 )
-subprocess.run(["samtools", "index", "possorted_genome_bam.sorted.bam"], check=True)
+subprocess.run(["samtools", "index", DIR + "possorted_genome_bam.sorted.bam"], check=True)
