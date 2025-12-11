@@ -54,7 +54,7 @@ subprocess.run(
         "sort",
         "-o",
         location,
-        curr_file,
+        "../HRR1795888/possorted_genome_bam.bam",
     ],
     check=True,
 )
