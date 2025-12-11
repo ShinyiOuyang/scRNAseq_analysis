@@ -12,7 +12,7 @@ bam_files = []
 DIR = "../HRR1795847/"
 curr_file = "possorted_genome_bam.bam"
 BAM_LIST = [
-    "possorted_genome_bam.bam"
+    "possorted_genome_bam"
 ]
 # BAM_LIST = [
 #     "pbmc_granulocyte_sorted_10k_gex_possorted_bam",
