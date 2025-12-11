@@ -19,23 +19,24 @@ BAM_LIST = [
 #     "pbmc_granulocyte_sorted_10k_gex_possorted_bam",
 #     "pbmc_granulocyte_sorted_10k_atac_possorted_bam",
 # ]
-print(time.time())
+start_time = time.time()
+print(start_time)
 
 for BAM in BAM_LIST:
     input_bam = DIR + BAM + ".bam"
-    output_bam = BAM + ".barcode.renamed.X.bam"
+    output_bam = DIR + BAM + ".barcode.renamed.X.bam"
     bam_files.append(output_bam)
 
     in_bam = pysam.AlignmentFile(input_bam, "rb")
     out_bam = pysam.AlignmentFile(output_bam, "wb", template=in_bam)
 
-    # if BAM == "pbmc_granulocyte_sorted_10k_gex_possorted_bam":
-    #     for aln in in_bam.fetch("chrX"):
+    for aln in in_bam.fetch("chrX"):
+        out_bam.write(aln)
     #         if aln.has_tag("CB"):
     #             old_bc = aln.get_tag("CB")
     #             new_bc = old_bc.replace("-1", "-RNA")
     #             aln.set_tag("CB", new_bc)
-    #             out_bam.write(aln)
+    #
 
     # elif BAM == "pbmc_granulocyte_sorted_10k_atac_possorted_bam":
     #     for aln in in_bam.fetch("chrX"):
@@ -48,17 +49,17 @@ for BAM in BAM_LIST:
     in_bam.close()
     out_bam.close()
 
-location = "../HRR1795888/possorted_genome_bam.sorted.bam"
+location = "../HRR1795888/possorted_genome_X.sorted.bam"
 subprocess.run(
     [
         "samtools",
         "sort",
         "-o",
         location,
-        "../HRR1795888/possorted_genome_bam.bam",
+        "../HRR1795888/possorted_genome_bam.barcode.renamed.X.bam",
     ],
     check=True,
 )
 subprocess.run(["samtools", "index", location], check=True)
 
-print(time.time())
+print(f"Total time taken: {time.time() - start_time} seconds")
