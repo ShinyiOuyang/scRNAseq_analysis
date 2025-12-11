@@ -28,33 +28,34 @@ for BAM in BAM_LIST:
     in_bam = pysam.AlignmentFile(input_bam, "rb")
     out_bam = pysam.AlignmentFile(output_bam, "wb", template=in_bam)
 
-    if BAM == "pbmc_granulocyte_sorted_10k_gex_possorted_bam":
-        for aln in in_bam.fetch("chrX"):
-            if aln.has_tag("CB"):
-                old_bc = aln.get_tag("CB")
-                new_bc = old_bc.replace("-1", "-RNA")
-                aln.set_tag("CB", new_bc)
-                out_bam.write(aln)
+    # if BAM == "pbmc_granulocyte_sorted_10k_gex_possorted_bam":
+    #     for aln in in_bam.fetch("chrX"):
+    #         if aln.has_tag("CB"):
+    #             old_bc = aln.get_tag("CB")
+    #             new_bc = old_bc.replace("-1", "-RNA")
+    #             aln.set_tag("CB", new_bc)
+    #             out_bam.write(aln)
 
-    elif BAM == "pbmc_granulocyte_sorted_10k_atac_possorted_bam":
-        for aln in in_bam.fetch("chrX"):
-            if aln.has_tag("CB"):
-                old_bc = aln.get_tag("CB")
-                new_bc = old_bc.replace("-1", "-ATAC")
-                aln.set_tag("CB", new_bc)
-                out_bam.write(aln)
+    # elif BAM == "pbmc_granulocyte_sorted_10k_atac_possorted_bam":
+    #     for aln in in_bam.fetch("chrX"):
+    #         if aln.has_tag("CB"):
+    #             old_bc = aln.get_tag("CB")
+    #             new_bc = old_bc.replace("-1", "-ATAC")
+    #             aln.set_tag("CB", new_bc)
+    #             out_bam.write(aln)
 
     in_bam.close()
     out_bam.close()
 
+location = "../HRR1795888/possorted_genome_bam.sorted.bam"
 subprocess.run(
     [
         "samtools",
         "sort",
         "-o",
-        DIR + "possorted_genome_bam.sorted.bam",
+        location,
         curr_file,
     ],
     check=True,
 )
-subprocess.run(["samtools", "index", DIR + "possorted_genome_bam.sorted.bam"], check=True)
+subprocess.run(["samtools", "index", location], check=True)
