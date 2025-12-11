@@ -5,14 +5,27 @@ barcode_rna="../HRR1795888/filtered_feature_bc_matrix/barcodes.tsv"
 bam_rna="../HRR1795888/possorted_genome_X.sorted.bam"
 UMITAG_rna="UB"
 
-#run cellsnp for RNA
+#run cellsnp in mode 2b
+cellsnp-lite -s ${bam_rna} \
+--minCOUNT 20 \
+--UMItag ${UMITAG_rna} \
+-p 16 \
+--minMAF 0.05 \
+--minMAPQ 20 \
+--refseq ../refdata-gex-GRCh38-2024-A/fasta/genome.fa \
+--chrom=chrX -O bulk.chrX.snp.call
+
+#run cellsnp in mode 1a
 cellsnp-lite -s ${bam_rna} \
 --minCOUNT 20 -b ${barcode_rna} \
---UMItag ${UMITAG_rna} -p 4 \
+-R bulk.chrX.snp.call/cellSNP.base.vcf \
+--UMItag ${UMITAG_rna} \
+-p 16 \
 --minMAF 0.05 \
 --minMAPQ 20 \
 --refseq ../refdata-gex-GRCh38-2024-A/fasta/genome.fa \
 --chrom=chrX -O RNA.chrX.snp.call
+
 
 #process output for RNA
 Rscript RCODE_process_cellsnp.r \
