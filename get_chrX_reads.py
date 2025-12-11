@@ -9,7 +9,7 @@ import pandas as pd
 import subprocess
 
 bam_files = []
-DIR = "../HRR1795847/"
+DIR = "../HRR1795887/"
 curr_file = "possorted_genome_bam.bam"
 BAM_LIST = [
     "possorted_genome_bam"
