@@ -11,11 +11,11 @@ cellsnp-lite -s ${bam_rna} \
 --UMItag ${UMITAG_rna} -p 4 \
 --minMAF 0.05 \
 --minMAPQ 20 \
---refseq ../refdata-gex-GRCh38-2024-A/fasta/genome.fa \ 
+--refseq ../refdata-gex-GRCh38-2024-A/fasta/genome.fa \
 --chrom=chrX -O RNA.chrX.snp.call
 
 #process output for RNA
-Rscript /RCODE_process_cellsnp.r \
+Rscript RCODE_process_cellsnp.r \
 RNA.chrX.snp.call/cellSNP.samples.tsv \
 RNA.chrX.snp.call/cellSNP.tag.AD.mtx \
 RNA.chrX.snp.call/cellSNP.tag.DP.mtx \
