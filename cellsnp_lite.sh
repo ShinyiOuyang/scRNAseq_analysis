@@ -8,7 +8,8 @@ UMITAG_rna="UB"
 #run cellsnp in mode 2b
 cellsnp-lite -s ${bam_rna} \
 --minCOUNT 20 \
---UMItag ${UMITAG_rna} \
+--cellTAG None \
+--UMItag None \
 -p 16 \
 --minMAF 0.05 \
 --minMAPQ 20 \
