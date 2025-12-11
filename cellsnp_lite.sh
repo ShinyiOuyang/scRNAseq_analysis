@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 #scRNA-seq data info
-barcode_rna="../HRR1795888/filtered_feature_bc_matrix/barcode.tsv"
+barcode_rna="../HRR1795888/filtered_feature_bc_matrix/barcodes.tsv"
 bam_rna="../HRR1795888/possorted_genome_X.sorted.bam"
 UMITAG_rna="UB"
 
