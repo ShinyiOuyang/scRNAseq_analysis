@@ -12,7 +12,7 @@ $annovarpath/table_annovar.pl \
 RNA.chrX.snp.call.summary.annov.input \
 $annovarpath/humandb/ -buildver hg38 \
 -out RNA.chrX.snp.call \
--remove -protocol refGene,ensGene,avsnp150 \
+-remove -protocol refGene,ensGene,avsnp150,ALL.sites.2015_08 \
 -operation g,g,f,f -nastring NA -polish
 
 # # scATAC-seq
