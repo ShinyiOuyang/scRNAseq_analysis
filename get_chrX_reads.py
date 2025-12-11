@@ -7,6 +7,7 @@
 import pysam
 import pandas as pd
 import subprocess
+import time
 
 bam_files = []
 DIR = "../HRR1795888/"
@@ -18,7 +19,7 @@ BAM_LIST = [
 #     "pbmc_granulocyte_sorted_10k_gex_possorted_bam",
 #     "pbmc_granulocyte_sorted_10k_atac_possorted_bam",
 # ]
-
+print(time.time())
 
 for BAM in BAM_LIST:
     input_bam = DIR + BAM + ".bam"
@@ -59,3 +60,5 @@ subprocess.run(
     check=True,
 )
 subprocess.run(["samtools", "index", location], check=True)
+
+print(time.time())
