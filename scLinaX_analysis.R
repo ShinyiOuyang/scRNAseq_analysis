@@ -6,7 +6,7 @@ library(dplyr)
 
 data("XCI_ref")
 data("AIDA_QCREF")
-multiome_ASE_df = read_tsv("Multiome_RNA_QC_passed_SNP_df")
+multiome_ASE_df = read_tsv("Multiome_RNA_QC_passed_SNP_df.tsv")
 
 scLinaX_res<-run_scLinaX(ASE_df=multiome_ASE_df,XCI_ref=XCI_ref,QCREF=AIDA_QCREF,
                              Inactive_Gene_ratio_THR=0.05,SNP_DETECTION_DP=30,SNP_DETECTION_MAF=0.1,QC_total_allele_THR=10,
