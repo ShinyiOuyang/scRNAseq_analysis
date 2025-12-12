@@ -10,7 +10,7 @@ import subprocess
 import time
 
 bam_files = []
-DIR = "../HRR1795889/"
+DIR = "../HRR1795896/"
 curr_file = "possorted_genome_bam.bam"
 BAM_LIST = [
     "possorted_genome_bam"
