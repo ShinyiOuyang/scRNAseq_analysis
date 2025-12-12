@@ -1,5 +1,5 @@
 #RCODE_QC.r
-library(tidyverse)
+library(readr)
 library(viridis)
 library(ggpointdensity)
 library(patchwork)
