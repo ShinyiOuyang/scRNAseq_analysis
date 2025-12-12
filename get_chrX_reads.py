@@ -10,7 +10,7 @@ import subprocess
 import time
 
 bam_files = []
-DIR = "../HRR1795888/"
+DIR = "../HRR1795889/"
 curr_file = "possorted_genome_bam.bam"
 BAM_LIST = [
     "possorted_genome_bam"
@@ -49,14 +49,14 @@ for BAM in BAM_LIST:
     in_bam.close()
     out_bam.close()
 
-location = "../HRR1795888/possorted_genome_X.sorted.bam"
+location = DIR + "possorted_genome_X.sorted.bam"
 subprocess.run(
     [
         "samtools",
         "sort",
         "-o",
         location,
-        "../HRR1795888/possorted_genome_bam.barcode.renamed.X.bam",
+        DIR + "possorted_genome_bam.barcode.renamed.X.bam",
     ],
     check=True,
 )

@@ -44,4 +44,4 @@ return(df)
 rna_df<-merge_anno(rna,rna_anno)
 
 rna_df_QC_pass<-filter(rna_df,ALL_Freq>0.01)
-write_tsv(rna_df_QC_pass,"Multiome_RNA_QC_passed_SNP_df.tsv.gz") #This QC-passed data should be used for the subsequent analyses
+write_tsv(rna_df_QC_pass,"HRR1795889_RNA_QC_passed_SNP_df.tsv.gz") #This QC-passed data should be used for the subsequent analyses
