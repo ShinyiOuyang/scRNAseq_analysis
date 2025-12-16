@@ -1,8 +1,8 @@
 #!/usr/bin/bash
 
 #scRNA-seq data info
-barcode_rna="../HRR1795896/filtered_feature_bc_matrix/barcodes.tsv"
-bam_rna="../HRR1795896/possorted_genome_X.sorted.bam"
+barcode_rna="${1}/filtered_feature_bc_matrix/barcodes.tsv"
+bam_rna="${1}/possorted_genome_X.sorted.bam"
 UMITAG_rna="UB"
 
 #run cellsnp in mode 2b

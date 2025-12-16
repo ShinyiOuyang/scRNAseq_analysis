@@ -8,12 +8,13 @@ import pysam
 import pandas as pd
 import subprocess
 import time
+import sys
 
 bam_files = []
-DIR = "../HRR1795896/"
+DIR = sys.argv[1]  # Get directory from command line argument
 curr_file = "possorted_genome_bam.bam"
 BAM_LIST = [
-    "possorted_genome_bam"
+    "/possorted_genome_bam"
 ]
 # BAM_LIST = [
 #     "pbmc_granulocyte_sorted_10k_gex_possorted_bam",
