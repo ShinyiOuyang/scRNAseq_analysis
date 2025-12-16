@@ -8,7 +8,8 @@ set -e
 #python3 ./get_chrX_reads.py $1 # Extract chrX reads from BAM
 
 # Unzip filtered feature barcode matrix
-if [ ! -d "$1/filtered_feature_bc_matrix/" ]; then mkdir $1/filtered_feature_bc_matrix/
+if [ ! -d "$1/filtered_feature_bc_matrix/" ]; then 
+    mkdir $1/filtered_feature_bc_matrix/
 tar -xf $1/filtered_feature_bc_matrix.tar.gz -C $1/filtered_feature_bc_matrix/
 zcat $1/filtered_feature_bc_matrix/barcodes.tsv.gz > $1/filtered_feature_bc_matrix/barcodes.tsv
 
@@ -20,4 +21,3 @@ bash ./annovar.sh
 
 # Step 4: QC
 Rscript RCODE_qc.R $1
-
