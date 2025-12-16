@@ -26,7 +26,7 @@ cellsnp-lite -s ${bam_rna} \
 -p 16 \
 --minMAF 0.05 \
 --minMAPQ 20 \
---refseq ${2} \ 
+--refseq ${2} \
 --chrom=chrX -O RNA.chrX.snp.call
 
 
