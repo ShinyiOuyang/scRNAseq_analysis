@@ -8,13 +8,15 @@ library(patchwork)
 
 # argv<-commandArgs(T)
 
-# RNA_SNPCELL=argv[1]
-# RNA_ANNOVAR=argv[2]
+RNA_SNPCELL=argv[1]
+RNA_ANNOVAR=argv[2]
+OUTPUT_NAME=argv[3]
+
 # ATAC_SNPCELL=argv[3]
 # ATAC_ANNOVAR=argv[4]
 
-RNA_SNPCELL="RNA.chrX.snp.call.summary.tsv.gz"
-RNA_ANNOVAR="RNA.chrX.snp.call.hg38_multianno.txt" 
+#RNA_SNPCELL="RNA.chrX.snp.call.summary.tsv.gz"
+#RNA_ANNOVAR="RNA.chrX.snp.call.hg38_multianno.txt" 
 # ATAC_SNPCELL="ATAC.chrX.snp.call.summary.tsv.gz"
 # ATAC_ANNOVAR="ATAC.chrX.snp.call.hg38_multianno.txt"
 
@@ -44,4 +46,4 @@ return(df)
 rna_df<-merge_anno(rna,rna_anno)
 
 rna_df_QC_pass<-filter(rna_df,ALL_Freq>0.01)
-write_tsv(rna_df_QC_pass,argv[1]+"_RNA_QC_passed_SNP_df.tsv.gz") #This QC-passed data should be used for the subsequent analyses
+write_tsv(rna_df_QC_pass,argv[3]+"_RNA_QC_passed_SNP_df.tsv.gz") #This QC-passed data should be used for the subsequent analyses
