@@ -5,7 +5,7 @@ set -e
 # Following steps from https://ytomofuji.github.io/scLinaX/articles/scLinaX_preprocessing_example.html
 
 # Step 1: Data Preparation
-#python3 ./get_chrX_reads.py $1 # Extract chrX reads from BAM
+python3 ./get_chrX_reads.py $1 # Extract chrX reads from BAM
 
 # Unzip filtered feature barcode matrix
 if [ ! -d "$1/filtered_feature_bc_matrix/" ]; then 
@@ -15,7 +15,7 @@ tar -xf $1/filtered_feature_bc_matrix.tar.gz -C $1/filtered_feature_bc_matrix/
 zcat $1/filtered_feature_bc_matrix/barcodes.tsv.gz > $1/filtered_feature_bc_matrix/barcodes.tsv
 
 # Step 2: Run Cellsnp-lite
-bash ./cellsnp_lite.sh $1
+bash ./cellsnp_lite.sh $1 $2 
 
 # Step 3: Run Annovar
 bash ./annovar.sh

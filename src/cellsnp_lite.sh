@@ -13,8 +13,10 @@ cellsnp-lite -s ${bam_rna} \
 -p 16 \
 --minMAF 0.05 \
 --minMAPQ 20 \
---refseq ../refdata-gex-GRCh38-2024-A/fasta/genome.fa \
+--refseq ${2}\
 --chrom=chrX -O bulk.chrX.snp.call
+
+#../refdata-gex-GRCh38-2024-A/fasta/genome.fa
 
 #run cellsnp in mode 1a
 cellsnp-lite -s ${bam_rna} \
@@ -24,7 +26,7 @@ cellsnp-lite -s ${bam_rna} \
 -p 16 \
 --minMAF 0.05 \
 --minMAPQ 20 \
---refseq ../refdata-gex-GRCh38-2024-A/fasta/genome.fa \
+--refseq ${2} \
 --chrom=chrX -O RNA.chrX.snp.call
 
 
