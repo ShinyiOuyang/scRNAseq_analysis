@@ -10,7 +10,7 @@ argv<-commandArgs(T)
 
 RNA_SNPCELL=argv[1]
 RNA_ANNOVAR=argv[2]
-OUTPUT_NAME=argv[3]
+OUTPUT_NAME=paste(argv[3],"RNA_QC_passed_SNP_df.tsv.gz",sep="_")
 
 # ATAC_SNPCELL=argv[3]
 # ATAC_ANNOVAR=argv[4]
@@ -46,4 +46,4 @@ return(df)
 rna_df<-merge_anno(rna,rna_anno)
 
 rna_df_QC_pass<-filter(rna_df,ALL_Freq>0.01)
-write_tsv(rna_df_QC_pass,argv[3]+"_RNA_QC_passed_SNP_df.tsv.gz") #This QC-passed data should be used for the subsequent analyses
+write_tsv(rna_df_QC_pass,OUTPUT_NAME) #This QC-passed data should be used for the subsequent analyses
