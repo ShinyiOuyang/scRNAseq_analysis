@@ -10,6 +10,7 @@ set -e
 # Unzip filtered feature barcode matrix
 if [ ! -d "$1/filtered_feature_bc_matrix/" ]; then 
     mkdir $1/filtered_feature_bc_matrix/
+fi
 tar -xf $1/filtered_feature_bc_matrix.tar.gz -C $1/filtered_feature_bc_matrix/
 zcat $1/filtered_feature_bc_matrix/barcodes.tsv.gz > $1/filtered_feature_bc_matrix/barcodes.tsv
 
