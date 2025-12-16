@@ -6,7 +6,7 @@ library(viridis)
 library(ggpointdensity)
 library(patchwork)
 
-# argv<-commandArgs(T)
+argv<-commandArgs(T)
 
 RNA_SNPCELL=argv[1]
 RNA_ANNOVAR=argv[2]
