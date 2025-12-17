@@ -14,7 +14,9 @@ fi
 if [ ! -e "$1/filtered_feature_bc_matrix.tar.gz" ]; then
     tar -xf $1/filtered_feature_bc_matrix.tar.gz -C $1/filtered_feature_bc_matrix/
 fi
-zcat $1/filtered_feature_bc_matrix/barcodes.tsv.gz > $1/filtered_feature_bc_matrix/barcodes.tsv
+if [ ! -e "$1/filtered_feature_bc_matrix/barcodes.tsv.gz" ]; then
+    zcat $1/filtered_feature_bc_matrix/barcodes.tsv.gz > $1/filtered_feature_bc_matrix/barcodes.tsv
+fi
 
 # Step 2: Run Cellsnp-lite
 bash ./src/cellsnp_lite.sh $1 $2 
