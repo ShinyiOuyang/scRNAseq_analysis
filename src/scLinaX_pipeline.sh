@@ -11,7 +11,7 @@ set -e
 if [ ! -d "$1/filtered_feature_bc_matrix/" ]; then 
     mkdir $1/filtered_feature_bc_matrix/
 fi
-if [ ! -e "$1/filtered_feature_bc_matrix.tar.gz"]; then
+if [ ! -e "$1/filtered_feature_bc_matrix.tar.gz" ]; then
     tar -xf $1/filtered_feature_bc_matrix.tar.gz -C $1/filtered_feature_bc_matrix/
 fi
 zcat $1/filtered_feature_bc_matrix/barcodes.tsv.gz > $1/filtered_feature_bc_matrix/barcodes.tsv
