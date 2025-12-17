@@ -5,7 +5,7 @@ set -e
 # Following steps from https://ytomofuji.github.io/scLinaX/articles/scLinaX_preprocessing_example.html
 
 # Step 1: Data Preparation
-#python3 ./src/get_chrX_reads.py $1 # Extract chrX reads from BAM
+python3 ./src/get_chrX_reads.py $1 # Extract chrX reads from BAM
 
 # Unzip filtered feature barcode matrix
 if [ ! -d "$1/filtered_feature_bc_matrix/" ]; then 
