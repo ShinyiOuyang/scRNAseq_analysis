@@ -1,0 +1,3 @@
+"Sample_ID","Max_single_SNP_cell_Number","Num_valid_cells","Num_A_cells","Num_B_cells","Num_Fail_cells","Reference_Gene","Num_Reference_Gene","Reference_SNP","Num_Reference_SNP"
+"sample_1",1165,2002,1173,829,34,"DOCK11,INTS6L,ARHGEF6,FLNA,RPL10,APOO,RPGR,ZNF41,CFP",9,"chrX:47624401:G:A,chrX:154363302:G:T,chrX:118569255:A:G,chrX:154360930:C:T,chrX:118517183:C:T,chrX:154363125:T:G,chrX:154363108:T:G,chrX:154360960:T:C,chrX:154363336:T:G,chrX:154398804:A:C,chrX:154363340:T:C,chrX:154398956:T:C,chrX:38326950:C:A,chrX:47457572:C:T,chrX:136701989:G:A,chrX:118566178:A:G,chrX:135558933:G:A,chrX:118503249:T:C,chrX:23840335:G:A",19
+"sample_1",83,83,52,31,0,"FTX",1,"chrX:74219856:A:C",1

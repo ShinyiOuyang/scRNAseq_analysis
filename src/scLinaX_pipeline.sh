@@ -5,13 +5,15 @@ set -e
 # Following steps from https://ytomofuji.github.io/scLinaX/articles/scLinaX_preprocessing_example.html
 
 # Step 1: Data Preparation
-python3 ./src/get_chrX_reads.py $1 # Extract chrX reads from BAM
+#python3 ./src/get_chrX_reads.py $1 # Extract chrX reads from BAM
 
 # Unzip filtered feature barcode matrix
 if [ ! -d "$1/filtered_feature_bc_matrix/" ]; then 
     mkdir $1/filtered_feature_bc_matrix/
 fi
-tar -xf $1/filtered_feature_bc_matrix.tar.gz -C $1/filtered_feature_bc_matrix/
+if [ ! -e "$1/filtered_feature_bc_matrix.tar.gz"]; then
+    tar -xf $1/filtered_feature_bc_matrix.tar.gz -C $1/filtered_feature_bc_matrix/
+fi
 zcat $1/filtered_feature_bc_matrix/barcodes.tsv.gz > $1/filtered_feature_bc_matrix/barcodes.tsv
 
 # Step 2: Run Cellsnp-lite

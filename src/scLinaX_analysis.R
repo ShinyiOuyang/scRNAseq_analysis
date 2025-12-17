@@ -4,12 +4,12 @@ library(readr)
 library(dplyr)
 
 
-samplename="sample_HRR1795888"
+samplename="HD89"
 data("XCI_ref")
 data("AIDA_QCREF")
 #data("multiome_ASE_df")
-multiome_ASE_df = read_tsv("HRR1795888_RNA_QC_passed_SNP_df.tsv")
-multiome_ASE_df$Sample_ID = "sample_HRR1795896"
+multiome_ASE_df = read_tsv("HD89_RNA_QC_passed_SNP_df.tsv")
+multiome_ASE_df$Sample_ID = "sample_1"
 
 
 # Inactive_Gene_ratio_THR=0.00,SNP_DETECTION_DP=0,SNP_DETECTION_MAF=0,QC_total_allele_THR=10,
@@ -36,11 +36,11 @@ if (require("ggplot2")) {
     xlab("")+ylab("ratio of the expression from Xi")
     p
 }
-ggsave("./sclinaX_test_boxplot.png",device="png", width=6,height=4)
+ggsave(paste0(samplename,".xi_expression_boxplot.png"),device="png", width=6,height=4)
 
 write.csv(scLinaX_res$Max_Num_Table_result, paste0(samplename,".sclinax_cell_counts.csv"), row.names = FALSE)
 write.csv(scLinaX_res$df_snp_summary, paste0(samplename,".sclinax_snp_summary.csv"), row.names = FALSE)
-write.csv(scLinaX_res$Fail_list, paste0(samplename,".fail_list.csv"), row.names = FALSE)
+#, paste0(samplename,".fail_list.csv"), row.names = FALSE)
 write.csv(PBMC_summary, paste0(samplename,".summarize.csv"), row.names = FALSE)
 write.csv(scLinaX_res$raw_exp_result, paste0(samplename,".sclinax_raw_exp.csv"), row.names = FALSE)
 
@@ -68,5 +68,5 @@ write.csv(xchrom_annotation, paste0(samplename,".xchrom_annotation.csv"), row.na
 barplot = ggplot(unique_xchrom_annotation_deduplicated) + 
   geom_bar(aes(x=Xa, fill=Xa))
 
-ggsave("./allele_boxplot.png",device="png", width=6,height=4)
+ggsave(paste0(samplename,".allele_barchart.png"),device="png", width=6,height=4)
 
