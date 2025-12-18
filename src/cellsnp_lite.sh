@@ -20,7 +20,7 @@ cellsnp-lite -s ${bam_rna} \
 
 #run cellsnp in mode 1a
 cellsnp-lite -s ${bam_rna} \
---minCOUNT 20 -b ${barcode_rna} \
+--minCOUNT 10 -b ${barcode_rna} \
 -R bulk.chrX.snp.call/cellSNP.base.vcf \
 --UMItag ${UMITAG_rna} \
 -p 16 \
