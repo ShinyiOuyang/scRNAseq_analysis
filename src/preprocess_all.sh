@@ -4,7 +4,7 @@ set -e
 
 # Define an array of file names
 #files=("HRR1795848" "HRR1795849" "HRR1795850" "HRR1795851" "HRR1795852" "HRR1795853" "HRR1795854" "HRR1795855" "HRR1795856")
-samples = ("HRR1795848")
+samples=("HRR1795848")
 
 # Iterate over the array
 for sample in "${samples[@]}"; do
