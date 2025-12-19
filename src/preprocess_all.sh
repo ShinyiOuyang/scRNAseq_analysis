@@ -10,7 +10,7 @@ samples=("HRR1795848")
 for sample in "${samples[@]}"; do
     echo "Processing $sample"
 
-    src/scLinaX_pipeline.sh /data/YH/Graves_dataset/CellRanger_results/${sample} ${sample}
+    bash src/scLinaX_pipeline.sh /data/YH/Graves_dataset/CellRanger_results/${sample} ${sample}
 
     mkdir to_scp/${sample}
 
