@@ -2,10 +2,12 @@
 
 set -e
 
-bash src/scLinaX_pipeline.sh /data/YH/Graves_dataset/CellRanger_results_SO_copy/HRR1795892 /data/YH/Graves_dataset/CellRanger_results_SO_copy/refdata-gex-GRCh38-2024-A/fasta/genome.fa HRR1795892
+# Define an array of file names
+files=("HRR1795848" "HRR1795849" "HRR1795850" "HRR1795851" "HRR1795852" "HRR1795853", "HRR1795854", "HRR1795855", "HRR1795856")
 
-bash src/scLinaX_pipeline.sh /data/YH/Graves_dataset/CellRanger_results_SO_copy/HRR1795893 /data/YH/Graves_dataset/CellRanger_results_SO_copy/refdata-gex-GRCh38-2024-A/fasta/genome.fa HRR1795893
+# Iterate over the array
+for file in "${files[@]}"; do
+    echo "Processing $file"
 
-bash src/scLinaX_pipeline.sh /data/YH/Graves_dataset/CellRanger_results_SO_copy/HRR1795894 /data/YH/Graves_dataset/CellRanger_results_SO_copy/refdata-gex-GRCh38-2024-A/fasta/genome.fa HRR1795894
-
-bash src/scLinaX_pipeline.sh /data/YH/Graves_dataset/CellRanger_results_SO_copy/HRR1795895 /data/YH/Graves_dataset/CellRanger_results_SO_copy/refdata-gex-GRCh38-2024-A/fasta/genome.fa HRR1795895
+    echo src/scLinaX_pipeline.sh /data/YH/Graves_dataset/CellRanger_results_SO_copy/${file} ${file}
+done

@@ -21,10 +21,10 @@ if [ -e "$1/filtered_feature_bc_matrix/barcodes.tsv.gz" ]; then
 fi
 
 # Step 2: Run Cellsnp-lite
-bash ./src/cellsnp_lite.sh $1 $2 
+bash ./src/cellsnp_lite.sh $1 
 
 # Step 3: Run Annovar
 bash ./src/annovar.sh
 
 # Step 4: QC
-Rscript ./src/RCODE_qc.R RNA.chrX.snp.call.summary.tsv.gz RNA.chrX.snp.call.hg38_multianno.txt $3
+Rscript ./src/RCODE_qc.R RNA.chrX.snp.call.summary.tsv.gz RNA.chrX.snp.call.hg38_multianno.txt $2
