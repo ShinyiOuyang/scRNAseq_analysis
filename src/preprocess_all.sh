@@ -10,12 +10,12 @@ samples=("HRR1795848")
 for sample in "${samples[@]}"; do
     echo "Processing $sample"
 
-    echo src/scLinaX_pipeline.sh /data/YH/Graves_dataset/CellRanger_results_SO_copy/${sample} ${sample}
+    src/scLinaX_pipeline.sh /data/YH/Graves_dataset/CellRanger_results/${sample} ${sample}
 
-    echo mkdir $sample
+    mkdir to_scp/${sample}
 
-    echo samtools view -b -h /data/YH/Graves_dataset/CellRanger_results_SO_copy/${sample}/possorted_genome_X.sorted.bam chrX:79171491-79171491 -o ${sample}/${sample}_s162p_subset.bam
+    samtools view -b -h /data/YH/Graves_dataset/CellRanger_results/${sample}/possorted_genome_X.sorted.bam chrX:79171491-79171491 -o to_scp/${sample}/${sample}_s162p_subset.bam
 
-    echo cp /data/YH/Graves_dataset/CellRanger_results_SO_copy/${sample}/possorted_genome_X.sorted.bam ${sample}/${sample}_possorted_genome_X.sorted.bam
+    cp /data/YH/Graves_dataset/CellRanger_results/${sample}/possorted_genome_X.sorted.bam to_scp/${sample}/${sample}_possorted_genome_X.sorted.bam
 
 done
