@@ -1,0 +1,315 @@
+---
+title: "20251113_XCI_analysis"
+output: html_document
+date: "2025-11-14"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(data.table)
+library(Rsamtools)
+library(GenomicRanges)
+library(ggplot2)
+
+setwd("/Users/yun-huang/Documents/GPR174/scRNAseq/20251113_XCI_analysis")
+
+```
+
+#Create sam file with relevant reads
+samtools view -F 4 -F 1024 -F 256 -F 2048 -q 30 C2_resequence/possorted_genome_bam.bam chrX:79171059-79171059 > 20251113_XCI_analysis/C2_R18_reads.sam
+
+samtools view -F 4 -F 1024 -F 256 -F 2048 -q 30 C3_resequence/possorted_genome_bam.bam chrX:79171059-79171059 > 20251113_XCI_analysis/C3_R18_reads.sam
+
+samtools view -F 4 -F 1024 -F 256 -F 2048 -q 30 HD89_resequence/possorted_genome_bam.bam chrX:79171059-79171059 > 20251113_XCI_analysis/HD89_R18_reads.sam
+
+
+```{r R18X_analysis}
+
+library(data.table)
+
+# Load the SAM file
+sam_file <- "C2_R18_reads.sam"
+sam_data <- fread(sam_file, header = FALSE, stringsAsFactors = FALSE, fill = TRUE)
+
+# Define the target position
+target_pos <- 79171059
+
+# Initialize counts for each cell
+cell_counts <- list()
+
+# Function to parse the CIGAR string and map the target position to the read sequence
+parse_cigar <- function(cigar, read_start, target_pos) {
+    # Split CIGAR string into operations (e.g., 58M252485N32M)
+    cigar_ops <- unlist(strsplit(cigar, "(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)", perl = TRUE))
+    cigar_lengths <- as.numeric(cigar_ops[seq(1, length(cigar_ops), by = 2)])
+    cigar_types <- cigar_ops[seq(2, length(cigar_ops), by = 2)]
+
+    # Initialize position tracking
+    ref_pos <- read_start
+    read_pos <- 1
+
+    # Iterate through CIGAR operations
+    for (i in seq_along(cigar_types)) {
+        op_len <- cigar_lengths[i]
+        op_type <- cigar_types[i]
+
+        if (op_type == "M") {
+            # Match: target position corresponds to read sequence
+            if (target_pos >= ref_pos && target_pos < ref_pos + op_len) {
+                read_offset <- target_pos - ref_pos + read_pos
+                return(read_offset)
+            }
+            ref_pos <- ref_pos + op_len
+            read_pos <- read_pos + op_len
+        } else if (op_type == "N") {
+            # Skipped region: target position is in the reference but not in the read
+            if (target_pos >= ref_pos && target_pos < ref_pos + op_len) {
+                return(NA)  # Target position is in the skipped region
+            }
+            ref_pos <- ref_pos + op_len
+        } else if (op_type == "I") {
+            # Insertion: position exists in the read but not the reference
+            read_pos <- read_pos + op_len
+        } else if (op_type == "D") {
+            # Deletion: position exists in the reference but not the read
+            ref_pos <- ref_pos + op_len
+        } else if (op_type %in% c("S", "H")) {
+            # Clipping: soft/hard clipping, does not consume reference positions
+            if (op_type == "S") {
+                read_pos <- read_pos + op_len
+            }
+        }
+    }
+
+    # If target position is not found in the alignment
+    return(NA)
+}
+
+# Iterate through rows of the SAM file
+for (i in seq_len(nrow(sam_data))) {
+    # Extract necessary fields
+    read_start <- sam_data[i, V4]  # Start position of the read
+    cigar <- sam_data[i, V6]       # CIGAR string
+    seq <- sam_data[i, V10]        # SEQ field
+    qual <- sam_data[i, V11]       # QUAL field
+    tags <- sam_data[i, 12:ncol(sam_data)]  # Optional tags
+
+    # Skip rows with missing or invalid fields
+    if (is.na(read_start) || is.na(cigar) || is.na(seq)) next
+
+    # Map the target position to the read sequence using the CIGAR string
+    read_offset <- parse_cigar(cigar, read_start, target_pos)
+
+    # Skip reads where the target position is not mapped (deletion or skipped region)
+    if (is.na(read_offset) || read_offset > nchar(seq)) next
+
+    # Extract cell barcode (CB tag)
+    cell_barcode <- NA
+    for (tag in tags) {
+        if (grepl("^CB:Z:", tag)) {
+            cell_barcode <- sub("^CB:Z:", "", tag)
+            break
+        }
+    }
+
+    # Skip rows without cell barcodes
+    if (is.na(cell_barcode)) next
+
+    # Extract base and its quality score at the mapped position
+    base <- substr(seq, read_offset, read_offset)  # Base at the mapped position
+    base_quality <- as.integer(charToRaw(substr(qual, read_offset, read_offset))) - 33  # Phred score
+
+    # Apply base quality filter (e.g., minimum Phred score of 30)
+    if (base_quality < 30) next
+
+    # Count C and T bases for the cell
+    if (base %in% c("C", "T")) {
+        if (!cell_barcode %in% names(cell_counts)) {
+            cell_counts[[cell_barcode]] <- c(C = 0, T = 0)
+        }
+        cell_counts[[cell_barcode]][base] <- cell_counts[[cell_barcode]][base] + 1
+    }
+}
+
+# Convert list to a data frame
+cell_counts_df <- do.call(rbind, lapply(names(cell_counts), function(cell) {
+    data.frame(Cell = cell, C = cell_counts[[cell]]["C"], T = cell_counts[[cell]]["T"])
+}))
+
+# Print results
+print(cell_counts_df)
+
+# Save results to a CSV file
+output_file <- "C2_R18_base_counts.csv"
+write.csv(cell_counts_df, output_file, row.names = FALSE)
+```
+
+```{r R18X}
+
+SNP = 79171059
+
+for (i in c("C2","C3"))
+{
+#Read Bam
+bam = paste0("/Users/yun-huang/Documents/GPR174/scRNAseq/20250712_resequence_analysis/",i,"_resequence_sorted.bam")
+region = GRanges("chrX", IRanges(start = SNP, end = SNP))
+
+param <- ScanBamParam(
+  which = region,
+  what = c("qname", "seq", "pos","cigar"),  # Extract sequence and position
+  tag = c("CB")  # Extract cell barcode tag
+)
+reads = scanBam(bam, param = param)
+
+read_start = reads[[1]]$pos
+read_end = read_start + nchar(reads[[1]]$seq) - 1
+overlapping_reads = (SNP >= read_start & SNP <= read_end & reads[[1]]$cigar=="90M")
+
+
+# Extract relevant fields
+reads_df = cbind(cell_barcode = reads[[1]]$tag$CB, sequence = as.character(reads[[1]]$seq), position = reads[[1]]$pos)
+overlapping_reads_df = reads_df[overlapping_reads,]
+
+overlapping_reads_df = cbind(overlapping_reads_df, R18 = substr(overlapping_reads_df[,2],SNP - as.numeric(overlapping_reads_df[,3])+1,SNP - as.numeric(overlapping_reads_df[,3])+1))
+
+GPR174cells = overlapping_reads_df[,c(1,4)]
+
+annotation = read.csv(paste0("/Users/yun-huang/Documents/GPR174/scRNAseq/20250712_resequence_analysis/",i,"_resequence.xchrom_annotation.csv"),header = TRUE)
+
+GPR174cell_annotation = merge(GPR174cells, annotation, by = "cell_barcode")
+
+counts <- GPR174cell_annotation %>%
+  group_by(R18, Xa) %>%
+  summarize(count = n(), .groups = "drop")
+
+ggplot(data = counts, aes(x = R18, y = count, fill = Xa)) +
+  geom_bar(stat = "identity") +  # Creates a bar graph with actual counts
+  labs(
+    title = paste0("Assignment of chrX:",SNP," to Allele A or B"),
+    x = "SNP",
+    y = "Count"
+  ) +
+  scale_fill_manual(
+    values = c("Allele_A" = "navy", "Allele_B" = "darkred"),
+    name = "Allele"
+  ) +
+  theme_minimal()
+
+ggsave(paste0(i,"_",SNP,"_annotation.pdf"), width = 6, height = 4)
+
+cell_annotation = read.csv(paste0("/Users/yun-huang/Documents/GPR174/scRNAseq/20250712_resequence_analysis/",i,"_resequence.CellTypes_Azimuth_simple.csv"))
+
+GPR174celltype_annotation = merge(cell_annotation, GPR174cell_annotation,by = "cell_barcode")
+
+write.csv(GPR174celltype_annotation, file = paste0(i,"_",SNP,"_categorization.csv"))
+}
+
+```
+
+```{r other_SNPs}
+#GPR174_SNPs
+SNP = 79145020 #Within highly repetitive region
+SNP = 79164834 #Intron
+SNP = 79164929 #Intron
+SNP = 79166687 #Intron
+SNP = 79170991 #5' UTR - only one individual has this
+
+#Variable escape
+SNP = 12888112 #TLR7, may cause early stop (TGG-->TGA) - need to figure out why A isn't showing up in the analysis - doesn't appear to have cell barcode
+
+#Escape genes
+SNP = 24213978 #ZFX
+
+#Mostly Escape
+SNP = 53422619 #USP9X
+
+#Mostly Silenced
+SNP = 120438465 #LAMP2
+
+#Mostly VE
+SNP = 153971622 #HCFC1
+
+#Other_SNPs in PAR regions
+SNP = 1361350 #IL3RA, PAR
+SNP = 156010643 #IL9R, PAR - this is listed as a silenced gene in the consensus paper, only C2 has variant
+SNP = 1536481 #P2RY8, PAR
+SNP = 305038 #GTPBP6, PAR
+
+#Other SNPs in inactivated regions
+SNP = 154011234 #IRAK1
+SNP = 149479050 #IDS - similar expression to GPR174
+SNP = 119470473 #SLC25A5
+SNP = 30871740 #TAB3
+SNP = 80730362 #BRWD3 - this one does not look inactivated but is in an intronic region
+SNP = 71239903 #ZMYM3 - approx 20% expression of GPR174, some mixing
+SNP = 118346197 #WDR44
+#Stopped checking at 300 reads/gene
+#Interestingly, the consensus paper names TLR7 as silenced gene even though subsequent work (PMID: 29374079) has suggested otherwise.
+
+for (i in c("C2","C3"))
+{
+#Read Bam
+bam = paste0("/Users/yun-huang/Documents/GPR174/scRNAseq/20250712_resequence_analysis/",i,"_resequence_sorted.bam")
+region = GRanges("chrX", IRanges(start = SNP, end = SNP))
+
+param <- ScanBamParam(
+  which = region,
+  what = c("qname", "seq", "pos","cigar"),  # Extract sequence and position
+  tag = c("CB")  # Extract cell barcode tag
+)
+reads = scanBam(bam, param = param)
+
+read_start = reads[[1]]$pos
+read_end = read_start + nchar(reads[[1]]$seq) - 1
+overlapping_reads = (SNP >= read_start & SNP <= read_end & reads[[1]]$cigar=="90M")
+
+
+# Extract relevant fields
+reads_df = cbind(cell_barcode = reads[[1]]$tag$CB, sequence = as.character(reads[[1]]$seq), position = reads[[1]]$pos)
+overlapping_reads_df = reads_df[overlapping_reads,]
+
+overlapping_reads_df = cbind(overlapping_reads_df, R18 = substr(overlapping_reads_df[,2],SNP - as.numeric(overlapping_reads_df[,3])+1,SNP - as.numeric(overlapping_reads_df[,3])+1))
+
+GPR174cells = overlapping_reads_df[,c(1,4)]
+
+annotation = read.csv(paste0("/Users/yun-huang/Documents/GPR174/scRNAseq/20250712_resequence_analysis/",i,"_resequence.xchrom_annotation.csv"),header = TRUE)
+
+GPR174cell_annotation = merge(GPR174cells, annotation, by = "cell_barcode")
+
+counts <- GPR174cell_annotation %>%
+  group_by(R18, Xa) %>%
+  summarize(count = n(), .groups = "drop")
+
+ggplot(data = counts, aes(x = R18, y = count, fill = Xa)) +
+  geom_bar(stat = "identity") +  # Creates a bar graph with actual counts
+  labs(
+    title = paste0("Assignment of chrX:",SNP," to Allele A or B"),
+    x = "SNP",
+    y = "Count"
+  ) +
+  scale_fill_manual(
+    values = c("Allele_A" = "navy", "Allele_B" = "darkred"),
+    name = "Allele"
+  ) +
+  theme_minimal()
+
+ggsave(paste0(i,"_",SNP,"_annotation.pdf"), width = 6, height = 4)
+
+cell_annotation = read.csv(paste0("/Users/yun-huang/Documents/GPR174/scRNAseq/20250712_resequence_analysis/",i,"_resequence.CellTypes_Azimuth_simple.csv"))
+
+GPR174celltype_annotation = merge(cell_annotation, GPR174cell_annotation,by = "cell_barcode")
+
+write.csv(GPR174celltype_annotation, file = paste0(i,"_",SNP,"_categorization.csv"))
+
+#Summarize allele per cell
+GPR174celltype_annotation_counts = data.frame(table(Cell = GPR174celltype_annotation$cell_barcode, Allele = GPR174celltype_annotation$R18))
+
+GPR174_pivot = pivot_wider(GPR174celltype_annotation_counts, 
+                        names_from = Allele, 
+                        values_from = Freq, 
+                        names_prefix = "")
+write.csv(GPR174_pivot, file = paste0(i,"_",SNP,"_categorization_summary.csv"))
+}
+
+```

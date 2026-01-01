@@ -4,3 +4,6 @@
 unix_commands.md
 r_commands.md
 .DS_Store
+.Rproj.user
+output/
+input/
